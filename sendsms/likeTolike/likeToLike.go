@@ -15,7 +15,7 @@ type LikeToLike struct {
 	Mobiles      []string
 }
 
-func (l *LikeToLike) New(key, line string, messageTexts, mobiles []string) *LikeToLike {
+func New(key, line string, messageTexts, mobiles []string) *LikeToLike {
 	return &LikeToLike{
 		key,
 		line,
@@ -38,6 +38,7 @@ func (l *LikeToLike) Send() (*http.Response, error) {
 
 	client := new(http.Client)
 	res, err := client.Do(req)
+	defer res.Body.Close()
 	if err != nil {
 		return nil, err
 	}

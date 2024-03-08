@@ -19,7 +19,7 @@ type Bulk struct {
 	sendDateTime time.Time
 }
 
-func (b *Bulk) New(key, line, message string, mobiles []string, send time.Time) *Bulk {
+func New(key, line, message string, mobiles []string, send time.Time) *Bulk {
 	return &Bulk{
 		key,
 		line,
@@ -40,11 +40,12 @@ func (b *Bulk) Send() (*http.Response, error) {
 	req.Header.Set("X-API-KEY", b.ApiKey)
 
 	client := new(http.Client)
-	resp, err := client.Do(req)
+	res, err := client.Do(req)
+	defer res.Body.Close()
 
 	if err != nil {
 		return nil, err
 	}
-	return resp, nil
+	return res, nil
 
 }

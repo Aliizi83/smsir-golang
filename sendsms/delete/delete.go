@@ -15,7 +15,7 @@ func Delete(apikey, packid string) (*http.Response, error) {
 	req.Header.Set("X-API-KEY", apikey)
 	client := new(http.Client)
 	res, err := client.Do(req)
-
+	defer res.Body.Close()
 	if err != nil {
 		return nil, err
 	}
