@@ -1,4 +1,4 @@
-package sendsms
+package bulk
 
 import (
 	"bytes"
@@ -34,9 +34,17 @@ func (b *Bulk) Send() (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(body))
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-API-KEY", b.ApiKey)
+
+	client := new(http.Client)
+	resp, err := client.Do(req)
+
 	if err != nil {
 		return nil, err
 	}
-	return resp, err
+	return resp, nil
+
 }
