@@ -3,6 +3,7 @@ package bulk
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -12,14 +13,14 @@ var (
 )
 
 type Bulk struct {
-	ApiKey       string
-	LineNumber   string
-	MessageText  string
-	Mobiles      []string
-	sendDateTime time.Time
+	ApiKey       string     `json:"-"`
+	LineNumber   string     `json:"lineNumber"`
+	MessageText  string     `json:"messageText"`
+	Mobiles      []string   `json:"mobiles"`
+	SendDateTime *time.Time `json:"sendDateTime"`
 }
 
-func New(key, line, message string, mobiles []string, send time.Time) *Bulk {
+func NewBulk(key, line, message string, mobiles []string, send *time.Time) *Bulk {
 	return &Bulk{
 		key,
 		line,
@@ -30,10 +31,13 @@ func New(key, line, message string, mobiles []string, send time.Time) *Bulk {
 }
 
 func (b *Bulk) Send() (*http.Response, error) {
+
 	body, err := json.Marshal(b)
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println(string(body))
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
